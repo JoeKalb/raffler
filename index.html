@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Raffle Giveaway</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Top Heading -->
+  <div class="container-fluid">
+    <div class="row top_header">
+      <div class="col">
+        <h2 class="heading">Easy Raffle Entry</h2>
+      </div>
+    </div>
+  </div>
+
+  <!-- Setting Entry Rates -->
+  <div class="container">
+    <div class="bordered">
+      <div class="row">
+        <div class="col">
+          <h4 class="heading">Rates per Ticket</h4>
+        </div>
+      </div>
+    </div>
+    <div class="bordered">
+      <div class="row">
+          <div class="col">
+            <p class="input-title">$ per Ticket</p>
+            <input type="number" class="form-control" placeholder="$ per Ticket" id="dollarRate">
+          </div>
+          <div class="col">
+            <p class="input-title">Bits per Ticket</p>
+            <input type="number" class="form-control" placeholder="Bits per Ticket" id="bitsRate">
+          </div>
+          <div class="col">
+            <p class="input-title">Currency per Ticket</p>
+            <input type="number" class="form-control" placeholder="Currency per Ticket" id="sCRate">
+          </div>
+      </div>
+      <div class="bordered">
+        <div class="row">
+          <div class="col">
+            <button type="button" class="btn btn-primary btn-lg btn-block" onclick="setRates()">Set Rates</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Display current rates -->
+      <div class="bordered start-hidden" id="displayRates">
+        <div class="row">
+          <div class="col">
+            <h4 class="heading">Current Ticket Rates</h4>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <p class="rateName">Dollars Per Ticket: 
+              <span id="displayDollarRate"></span>
+            </p>
+          </div>
+          <div class="col">
+            <p class="rateName">Bits Per Ticket: 
+              <span id="displayBitsRate"></span>
+            </p>
+          </div>
+          <div class="col">
+            <p class="rateName">Currency Per Ticket: 
+              <span id="displayStreamCurrencyRate"></span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Adding/Editing Entries -->
+      <div class="bordered start-hidden" id="addEntry">
+        <div class="row">
+          <div class="col">
+            <h4 class="heading">Add/Edit Entry</h4>
+          </div>
+        </div>
+        <div class="bordered">
+          <div class="row">
+            <div class="col">
+              <p class="input-title">User Name</p>
+              <input type="text" class="form-control" placeholder="User Name" id="userName">
+            </div>
+            <div class="col">
+              <p class="input-title">Dollars</p>
+              <input type="number" class="form-control" placeholder="$" id="userDollar">
+            </div>
+            <div class="col">
+              <p class="input-title">Bits</p>
+              <input type="number" class="form-control" placeholder="Bits" id="userBits">
+            </div>
+            <div class="col">
+              <p class="input-title">Stream Currency</p>
+              <input type="number" class="form-control" placeholder="Currency" id="userCurrency">
+            </div>
+          </div>
+        </div>
+        <div class="bordered">
+          <div class="row">
+            <div class="col">
+              <button type="button" class="btn btn-primary btn-lg btn-block" onclick="submitEntry()">Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Draw Winner and All Entry Info -->
+      <div class="bordered start-hidden" id="entries">
+
+        <!-- Draw Winner -->
+        <div class="bordered">
+          <div class="row">
+            <div class="col">
+              <button type="button" class="btn btn-success btn-lg btn-block" onclick="drawWinner()">Draw Winner</button>
+            </div>
+            <div class="col" id="winner">
+              <h5 id="winnerDisplay"></h5>
+            </div>
+          </div>
+        </div>
+
+        <!-- Entries -->
+        <div class="bordered" id="indivEntries">
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>

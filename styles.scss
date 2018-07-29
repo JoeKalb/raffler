@@ -1,0 +1,62 @@
+// Custom.scss
+// Option A: Include all of Bootstrap
+
+@import "node_modules/bootstrap/scss/bootstrap";
+
+// Custom.scss
+// Option B: Include parts of Bootstrap
+
+// Required
+@import "node_modules/bootstrap/scss/functions";
+@import "node_modules/bootstrap/scss/variables";
+@import "node_modules/bootstrap/scss/mixins";
+
+// Optional
+@import "node_modules/bootstrap/scss/reboot";
+@import "node_modules/bootstrap/scss/type";
+@import "node_modules/bootstrap/scss/images";
+@import "node_modules/bootstrap/scss/code";
+@import "node_modules/bootstrap/scss/grid";
+
+.top_header{
+  background-color: rgb(207, 207, 207);
+}
+
+.bordered {
+  margin-top: 2%;
+  margin-bottom: 2%;
+}
+
+.start-hidden {
+  display: none;
+}
+
+.input-title {
+  padding-left: 13px;
+}
+
+.rateName {
+  font-weight: bold;
+}
+
+.card {
+  width: 12rem;
+}
+
+.inner-p {
+  margin-bottom: 0px;
+}
+
+.heading{
+  text-align: center;
+}
+
+#indivEntries{
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#winnerDisplay{
+  text-align: center;
+  padding-top: 12px;
+}
