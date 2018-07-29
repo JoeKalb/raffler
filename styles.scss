@@ -18,13 +18,12 @@
 @import "node_modules/bootstrap/scss/code";
 @import "node_modules/bootstrap/scss/grid";
 
-.top_header{
-  background-color: rgb(207, 207, 207);
+p{
+  margin: 0px;
 }
 
 .bordered {
-  margin-top: 2%;
-  margin-bottom: 2%;
+  margin-top: 4%;
 }
 
 .start-hidden {
@@ -49,6 +48,14 @@
 
 .heading{
   text-align: center;
+}
+
+.rate{
+  text-align: center;
+}
+
+#displayRates{
+  background-color: rgba(173, 216, 230, .5);
 }
 
 #indivEntries{

@@ -10,14 +10,18 @@
 <body>
   <!-- Top Heading -->
   <div class="container-fluid">
-    <div class="row top_header">
-      <div class="col">
-        <h2 class="heading">Easy Raffle Entry</h2>
-      </div>
+    <div class="jumbotron">
+      <h1 class="display-4">Easy Raffle Handler</h1>
+      <p class="lead">Set the Rates per Ticket, submit the contributions of each person, pick a winner!</p>
+      <hr class="my-4">
+      <p>Let me know if you want to see something changed and I'll do my best to edit it. -JoeFish</p>
+      <p class="lead">
+        <button class="btn btn-primary btn-lg" href="#" role="button" onclick="download()">Download CVS</button>
+      </p>
     </div>
   </div>
 
-  <!-- Setting Entry Rates -->
+  <!-- Main App -->
   <div class="container">
     <div class="bordered">
       <div class="row">
@@ -57,17 +61,17 @@
           </div>
         </div>
         <div class="row">
-          <div class="col">
+          <div class="col rate">
             <p class="rateName">Dollars Per Ticket: 
               <span id="displayDollarRate"></span>
             </p>
           </div>
-          <div class="col">
+          <div class="col rate">
             <p class="rateName">Bits Per Ticket: 
               <span id="displayBitsRate"></span>
             </p>
           </div>
-          <div class="col">
+          <div class="col rate">
             <p class="rateName">Currency Per Ticket: 
               <span id="displayStreamCurrencyRate"></span>
             </p>

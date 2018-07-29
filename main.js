@@ -4,16 +4,22 @@ let ticketRates = {
   'stream currency': "NA"
 }
 
+function scrollToBottom(){
+  document.body.scrollIntoView({behavior: "smooth", block: "end"})
+}
+
+let entries = 0;
 function setRates(){
   ticketRates.dollar = document.getElementById("dollarRate").value || "NA"
   ticketRates.bits = document.getElementById("bitsRate").value || "NA"
   ticketRates["stream currency"] = document.getElementById("sCRate").value || "NA"
   displayRates()
-  let numEntries = 0;
-  for(users in userEntries)
-    ++numEntries;
-  if(numEntries > 0)
+
+  localStorage.setItem("ticketRates", JSON.stringify(ticketRates))
+  if(entries != 0)
     recalcEntries();
+
+  scrollToBottom();
 }
 
 function displayRates(){
@@ -55,6 +61,10 @@ function submitEntry(){
     if(document.getElementById("entries").style.display != "block") {
       document.getElementById("entries").style.display = "block"
     }
+
+    if(entries == 0)
+      scrollToBottom();
+    ++entries;
   } 
   else{
     document.getElementById("userName").focus();
@@ -76,6 +86,8 @@ function addEntry(name, dollar, bits, currency) {
   newEntry.tickets = ticketCalc(dollar, bits, currency)
 
   userEntries[name] = newEntry
+
+  localStorage.setItem(name, JSON.stringify(newEntry))
 
   return newEntry
 }
@@ -174,6 +186,7 @@ function deleteTicket(name){
   delete userEntries[name];
   let removeTicket = document.getElementById("userCard" + name);
   removeTicket.remove();
+  --entries;
 }
 
 function drawWinner(){
@@ -190,4 +203,8 @@ function drawWinner(){
   let winningTicket = Math.floor(Math.random() * ticketCount);
   console.log(winningTicket);
   document.getElementById("winnerDisplay").innerHTML = raffleTickets[winningTicket];
+}
+
+function download(){
+  console.log("will download something")
 }

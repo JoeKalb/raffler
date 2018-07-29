@@ -10078,13 +10078,12 @@ pre code {
     margin-left: 91.6666666667%;
   }
 }
-.top_header {
-  background-color: #cfcfcf;
+p {
+  margin: 0px;
 }
 
 .bordered {
-  margin-top: 2%;
-  margin-bottom: 2%;
+  margin-top: 4%;
 }
 
 .start-hidden {
@@ -10109,6 +10108,14 @@ pre code {
 
 .heading {
   text-align: center;
+}
+
+.rate {
+  text-align: center;
+}
+
+#displayRates {
+  background-color: rgba(173, 216, 230, 0.5);
 }
 
 #indivEntries {
