@@ -184,6 +184,7 @@ function editTicket(name){
 
 function deleteTicket(name){
   delete userEntries[name];
+  delete localStorage[name];
   let removeTicket = document.getElementById("userCard" + name);
   removeTicket.remove();
   --entries;
@@ -201,10 +202,64 @@ function drawWinner(){
   }
 
   let winningTicket = Math.floor(Math.random() * ticketCount);
-  console.log(winningTicket);
   document.getElementById("winnerDisplay").innerHTML = raffleTickets[winningTicket];
 }
 
 function download(){
   console.log("will download something")
 }
+
+function resetItems(){
+  
+  let rateInputs = document.getElementsByClassName('rate-input')
+  for(let i in rateInputs){
+    rateInputs[i].value = "";
+  }
+
+  for(user in userEntries){
+    deleteTicket(user)
+  }
+
+  ticketRates = {
+    'dollar': "NA",
+    'bits': "NA",
+    'stream currency': "NA"
+  }
+
+  setRates();
+
+  document.getElementById('winnerDisplay').innerHTML = "";
+  
+  let hideDivs = document.getElementsByClassName('start-hidden')
+  Array.prototype.forEach.call(hideDivs, (div) => {
+    div.style.display = "none";
+  })
+
+  localStorage.clear();
+}
+
+// checking local hosts with and updating values
+(function() {
+  Object.keys(localStorage).forEach((key) => {
+    if(key == "ticketRates"){
+      let localSavedRates = JSON.parse(localStorage[key])
+      // set local rates from the local storage
+      if(localSavedRates.dollar != "NA" ||
+        localSavedRates.bits != "NA" ||
+        localSavedRates["stream currency"] != "NA"){
+          document.getElementById('dollarRate').value = (localSavedRates.dollar == "NA") ? "" : localSavedRates.dollar;
+          document.getElementById('bitsRate').value = (localSavedRates.bits == "NA") ? "" : localSavedRates.bits;
+          document.getElementById('sCRate').value = (localSavedRates["stream currency"] == "NA") ? "" : localSavedRates["stream currency"];
+          setRates();
+        }
+    }
+    else{
+      let localSavedUser = JSON.parse(localStorage[key])
+      document.getElementById('entries').style.display = "block";
+      userEntries[key] = localSavedUser;
+      ++entries;
+      if(entries == 1) scrollToBottom();
+      displayEntry(localSavedUser);
+    }
+  })
+})();

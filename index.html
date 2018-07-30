@@ -16,7 +16,8 @@
       <hr class="my-4">
       <p>Let me know if you want to see something changed and I'll do my best to edit it. -JoeFish</p>
       <p class="lead">
-        <button class="btn btn-primary btn-lg" href="#" role="button" onclick="download()" disabled>Download CVS... soon</button>
+        <button class="btn btn-primary btn-lg" role="button" onclick="download()" disabled>Download CVS... soon</button>
+        <button class="btn btn-danger btn-lg" role="button" onclick="resetItems()">Clear Info</button>
       </p>
     </div>
   </div>
@@ -34,15 +35,15 @@
       <div class="row">
           <div class="col">
             <p class="input-title">$ per Ticket</p>
-            <input type="number" class="form-control" placeholder="$ per Ticket" id="dollarRate">
+            <input type="number" class="form-control rate-input" placeholder="$ per Ticket" id="dollarRate">
           </div>
           <div class="col">
             <p class="input-title">Bits per Ticket</p>
-            <input type="number" class="form-control" placeholder="Bits per Ticket" id="bitsRate">
+            <input type="number" class="form-control rate-input" placeholder="Bits per Ticket" id="bitsRate">
           </div>
           <div class="col">
             <p class="input-title">Currency per Ticket</p>
-            <input type="number" class="form-control" placeholder="Currency per Ticket" id="sCRate">
+            <input type="number" class="form-control rate-input" placeholder="Currency per Ticket" id="sCRate">
           </div>
       </div>
       <div class="bordered">
