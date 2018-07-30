@@ -188,6 +188,7 @@ function deleteTicket(name){
   let removeTicket = document.getElementById("userCard" + name);
   removeTicket.remove();
   --entries;
+  if(entries == 0) document.getElementById("entries").style.display = "none";
 }
 
 function drawWinner(){
