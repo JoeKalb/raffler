@@ -62,6 +62,8 @@ function submitEntry(){
       document.getElementById("entries").style.display = "block"
     }
 
+    document.getElementById("userName").focus();
+
     if(entries == 0)
       scrollToBottom();
     ++entries;
@@ -237,6 +239,7 @@ function resetItems(){
   })
 
   localStorage.clear();
+  entries = 0;
 }
 
 // checking local hosts with and updating values
