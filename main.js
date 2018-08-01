@@ -1,7 +1,8 @@
 let ticketRates = {
   'dollar': "NA",
   'bits': "NA",
-  'stream currency': "NA"
+  'stream currency': "NA",
+  'subs': "NA"
 }
 
 function scrollToBottom(){
@@ -13,6 +14,7 @@ function setRates(){
   ticketRates.dollar = document.getElementById("dollarRate").value || "NA"
   ticketRates.bits = document.getElementById("bitsRate").value || "NA"
   ticketRates["stream currency"] = document.getElementById("sCRate").value || "NA"
+  ticketRates.subs = document.getElementById("subRate").value || "NA"
   displayRates()
 
   localStorage.setItem("ticketRates", JSON.stringify(ticketRates))
@@ -26,6 +28,7 @@ function displayRates(){
   document.getElementById("displayDollarRate").innerHTML = ticketRates.dollar
   document.getElementById("displayBitsRate").innerHTML = ticketRates.bits
   document.getElementById("displayStreamCurrencyRate").innerHTML = ticketRates["stream currency"]
+  document.getElementById("displayStreamSubRate").innerHTML = ticketRates.subs
   document.getElementById("displayRates").style.display = "block"
   document.getElementById("addEntry").style.display = "block"
 }
@@ -33,7 +36,10 @@ function displayRates(){
 function recalcEntries(){
   for(user in userEntries){
     addEntry(userEntries[user].name, 
-      userEntries[user].dollar, userEntries[user].bits, userEntries[user].currency)
+      userEntries[user].dollar, 
+      userEntries[user].bits, 
+      userEntries[user].currency,
+      userEntries[user].subs)
     displayEntry(userEntries[user])
   }
 }
@@ -44,11 +50,17 @@ function submitEntry(){
   let dollar = document.getElementById("userDollar").value;
   let bits = document.getElementById("userBits").value;
   let currency = document.getElementById("userCurrency").value;
+  let subs = document.getElementById("userSubs").value;
   document.getElementById("userName").disabled = false;
   // make sure username is available before adding entries
   if(name != ""){
+
+    dollar = ifEmpty(dollar)
+    bits = ifEmpty(bits)
+    currency = ifEmpty(currency)
+    subs = ifEmpty(subs)
     // add values to userEntries array
-    let newEntry = addEntry(name, dollar, bits, currency)
+    let newEntry = addEntry(name, dollar, bits, currency, subs)
     // display new Entry
     displayEntry(newEntry);
 
@@ -57,6 +69,7 @@ function submitEntry(){
     document.getElementById("userDollar").value = "";
     document.getElementById("userBits").value = "";
     document.getElementById("userCurrency").value = "";
+    document.getElementById("userSubs").value = "";
     
     if(document.getElementById("entries").style.display != "block") {
       document.getElementById("entries").style.display = "block"
@@ -75,7 +88,8 @@ function submitEntry(){
 
 // array of all users currenty entered
 let userEntries = {}
-function addEntry(name, dollar, bits, currency) {
+function addEntry(name, dollar, bits, currency, subs) {
+
   name = name.toLowerCase()
 
   let newEntry = {
@@ -83,9 +97,10 @@ function addEntry(name, dollar, bits, currency) {
     "dollar": dollar,
     "bits": bits,
     "currency": currency,
+    "subs": subs,
     "tickets":0
   }
-  newEntry.tickets = ticketCalc(dollar, bits, currency)
+  newEntry.tickets = ticketCalc(dollar, bits, currency, subs)
 
   userEntries[name] = newEntry
 
@@ -94,8 +109,17 @@ function addEntry(name, dollar, bits, currency) {
   return newEntry
 }
 
+function ifEmpty(input){
+  if(input == undefined || input == "")
+    return 0
+  else {
+    input = input.trim()
+    return input
+  }
+}
+
 // will round down values so fractions do not count
-function ticketCalc(dollar, bits, currency){
+function ticketCalc(dollar, bits, currency, subs){
   let tickets = 0;
 
   tickets += (ticketRates.dollar == "NA") ? 
@@ -104,6 +128,8 @@ function ticketCalc(dollar, bits, currency){
     0 : Math.floor(bits/ticketRates.bits)
   tickets += (ticketRates["stream currency"] == "NA") ? 
     0 : Math.floor(currency/ticketRates["stream currency"])
+  tickets += (ticketRates.subs == "NA") ?
+    0 : Math.floor(subs/ticketRates.subs)
 
   return tickets;
 }
@@ -147,6 +173,11 @@ function displayEntry(newEntry){
     userStreamCurrencyDisplay.innerHTML = "Currency: " + newEntry.currency;
     cardBody.appendChild(userStreamCurrencyDisplay);
 
+    let userSubsDisplay = document.createElement('p');
+    userSubsDisplay.className = "card-text inner-p";
+    userSubsDisplay.innerHTML = "Subs: " + newEntry.subs;
+    cardBody.appendChild(userSubsDisplay);
+
     let buttonDiv = document.createElement('div');
     buttonDiv.className = 'row';
     cardBody.appendChild(buttonDiv);
@@ -174,6 +205,7 @@ function editUserCard(updatedEntry){
   otherAttr[0].innerHTML = "$ " + updatedEntry.dollar;
   otherAttr[1].innerHTML = "Bits: " + updatedEntry.bits;
   otherAttr[2].innerHTML = "Currency: " + updatedEntry.currency;
+  otherAttr[3].innerHTML = "Subs: " + updatedEntry.subs;
 }
 
 function editTicket(name){
@@ -182,6 +214,7 @@ function editTicket(name){
   document.getElementById("userDollar").value = userEntries[name].dollar;
   document.getElementById("userBits").value = userEntries[name].bits;
   document.getElementById("userCurrency").value = userEntries[name].currency;
+  document.getElementById("userSubs").value = userEntries[name].subs;
 }
 
 function deleteTicket(name){
@@ -226,7 +259,8 @@ function resetItems(){
   ticketRates = {
     'dollar': "NA",
     'bits': "NA",
-    'stream currency': "NA"
+    'stream currency': "NA",
+    'subs': "NA"
   }
 
   setRates();
@@ -242,6 +276,15 @@ function resetItems(){
   entries = 0;
 }
 
+let toggleTicketAndTable = false;
+function toggleView(){
+  if(toggleTicketAndTable){
+    toggleTicketAndTable = false;
+  }else{
+    toggleTicketAndTable = true;
+  }
+}
+
 // checking local hosts with and updating values
 (function() {
   Object.keys(localStorage).forEach((key) => {
@@ -254,6 +297,7 @@ function resetItems(){
           document.getElementById('dollarRate').value = (localSavedRates.dollar == "NA") ? "" : localSavedRates.dollar;
           document.getElementById('bitsRate').value = (localSavedRates.bits == "NA") ? "" : localSavedRates.bits;
           document.getElementById('sCRate').value = (localSavedRates["stream currency"] == "NA") ? "" : localSavedRates["stream currency"];
+          document.getElementById('subRate').value = (localSavedRates.subs == "NA") ? "" : localSavedRates.subs;
           setRates();
         }
     }
