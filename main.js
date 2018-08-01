@@ -11,11 +11,16 @@ function scrollToBottom(){
 
 let entries = 0;
 function setRates(){
-  ticketRates.dollar = document.getElementById("dollarRate").value || "NA"
-  ticketRates.bits = document.getElementById("bitsRate").value || "NA"
-  ticketRates["stream currency"] = document.getElementById("sCRate").value || "NA"
-  ticketRates.subs = document.getElementById("subRate").value || "NA"
+  ticketRates.dollar = Number(document.getElementById("dollarRate").value) || "NA"
+  ticketRates.bits = Number(document.getElementById("bitsRate").value) || "NA"
+  ticketRates["stream currency"] = Number(document.getElementById("sCRate").value) || "NA"
+  ticketRates.subs = Number(document.getElementById("subRate").value) || "NA"
   displayRates()
+
+  makeBlur("dollarRate")
+  makeBlur("bitsRate")
+  makeBlur("sCRate")
+  makeBlur("subRate")
 
   localStorage.setItem("ticketRates", JSON.stringify(ticketRates))
   if(entries != 0)
@@ -24,11 +29,17 @@ function setRates(){
   scrollToBottom();
 }
 
+function makeBlur(id){
+  document.getElementById(id).blur()
+}
+
 function displayRates(){
+  // update rates
   document.getElementById("displayDollarRate").innerHTML = ticketRates.dollar
   document.getElementById("displayBitsRate").innerHTML = ticketRates.bits
   document.getElementById("displayStreamCurrencyRate").innerHTML = ticketRates["stream currency"]
   document.getElementById("displayStreamSubRate").innerHTML = ticketRates.subs
+  // show rates
   document.getElementById("displayRates").style.display = "block"
   document.getElementById("addEntry").style.display = "block"
 }
@@ -46,19 +57,15 @@ function recalcEntries(){
 
 // grab data, add to array of objects, make card, display draw winner area
 function submitEntry(){
-  let name = document.getElementById("userName").value;
-  let dollar = document.getElementById("userDollar").value;
-  let bits = document.getElementById("userBits").value;
-  let currency = document.getElementById("userCurrency").value;
-  let subs = document.getElementById("userSubs").value;
+  let name = document.getElementById("userName").value.trim();
+  let dollar = Number(document.getElementById("userDollar").value) || 0;
+  let bits = Number(document.getElementById("userBits").value) || 0;
+  let currency = Number(document.getElementById("userCurrency").value) || 0;
+  let subs = Number(document.getElementById("userSubs").value) || 0;
   document.getElementById("userName").disabled = false;
   // make sure username is available before adding entries
   if(name != ""){
 
-    dollar = ifEmpty(dollar)
-    bits = ifEmpty(bits)
-    currency = ifEmpty(currency)
-    subs = ifEmpty(subs)
     // add values to userEntries array
     let newEntry = addEntry(name, dollar, bits, currency, subs)
     // display new Entry
@@ -107,15 +114,6 @@ function addEntry(name, dollar, bits, currency, subs) {
   localStorage.setItem(name, JSON.stringify(newEntry))
 
   return newEntry
-}
-
-function ifEmpty(input){
-  if(input == undefined || input == "")
-    return 0
-  else {
-    input = input.trim()
-    return input
-  }
 }
 
 // will round down values so fractions do not count
@@ -284,6 +282,18 @@ function toggleView(){
     toggleTicketAndTable = true;
   }
 }
+
+window.addEventListener('keypress', (e) => {
+  let key = e.which || e.keyCode;
+  if(key === 13){
+    if(document.activeElement.className == "form-control rate-input")
+      setRates()
+    else if(document.activeElement.className == "form-control user-input")
+      submitEntry()
+    else
+      console.log("enter was pressed but this should do nothing")
+  }
+});
 
 // checking local hosts with and updating values
 (function() {
