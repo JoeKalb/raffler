@@ -92,7 +92,7 @@ function submitEntry(){
       document.getElementById("downloadBtn").disabled = true;
     }
 
-    ++entries;
+    //++entries; swapped increase entries to displayEntry
   } 
   else{
     document.getElementById("userName").focus();
@@ -144,6 +144,7 @@ function displayEntry(newEntry){
     editUserCard(newEntry)
   }
   else{
+    ++entries;
     let newEntryCard = document.createElement('div');
     newEntryCard.className = "card";
     newEntryCard.id = "userCard" + newEntry.name;
@@ -312,7 +313,7 @@ function updateWithNewCSV(newCSV){
       let newEntry = addEntry(csvUser.name, Number(csvUser.cash.replace("$","")), 
         csvUser.bits, csvUser.currency, csvUser.subs)
       displayEntry(newEntry)
-      ++entries;
+      
 
       if(entries == 1){
         scrollToBottom()
