@@ -227,6 +227,7 @@ function deleteTicket(name){
   let removeTicket = document.getElementById("userCard" + name);
   removeTicket.remove();
   --entries;
+  console.log("Current Entries: ", entries)
   if(entries == 0) document.getElementById("entries").style.display = "none";
 }
 
@@ -289,6 +290,7 @@ function handleFiles(){
     reader.readAsText(newCSV);
     reader.addEventListener("load", () => {
       updateWithNewCSV(reader.result)
+      document.getElementById("uploadedCSV").value = ""
     })
   }
 }
@@ -356,7 +358,7 @@ window.addEventListener('keypress', (e) => {
     else if(document.activeElement.className == "form-control user-input")
       submitEntry()
     else
-      console.log("enter was pressed but this should do nothing")
+      console.log("enter was pressed")
   }
 });
 
