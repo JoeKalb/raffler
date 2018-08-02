@@ -84,8 +84,14 @@ function submitEntry(){
 
     document.getElementById("userName").focus();
 
-    if(entries == 0)
+    if(entries == 0){
       scrollToBottom();
+      document.getElementById("downloadBtn").disabled = false;
+    }
+    else{
+      document.getElementById("downloadBtn").disabled = true;
+    }
+
     ++entries;
   } 
   else{
@@ -240,7 +246,35 @@ function drawWinner(){
 }
 
 function download(){
-  console.log("will download something")
+  let element = document.createElement('a')
+
+  let newCSV = formatToCSV(userEntries)
+  element.setAttribute('href', 'data:text/csv;charset=usf-8,' + encodeURIComponent(newCSV))
+  element.setAttribute('download', 'raffle_info.csv')
+  
+  element.style.display = 'none'
+  document.body.appendChild(element)
+
+  element.click()
+
+  document.body.removeChild(element)
+}
+
+function formatToCSV(jsonUsersArray){
+  let csv = "name,dollars,bits,currency,subs,tickets" + "\r\n"
+
+  for(user in jsonUsersArray){
+    console.log(user)
+    csv += jsonUsersArray[user].name + ","
+    csv += jsonUsersArray[user].dollar + ","
+    csv += jsonUsersArray[user].bits + ","
+    csv += jsonUsersArray[user].currency + ","
+    csv += jsonUsersArray[user].subs + ","
+    csv += jsonUsersArray[user].tickets + ","
+    csv += "\r\n"
+  }
+
+  return csv
 }
 
 function resetItems(){
@@ -316,7 +350,10 @@ window.addEventListener('keypress', (e) => {
       document.getElementById('entries').style.display = "block";
       userEntries[key] = localSavedUser;
       ++entries;
-      if(entries == 1) scrollToBottom();
+      if(entries == 1) {
+        document.getElementById('downloadBtn').disabled = false;
+        scrollToBottom();
+      }
       displayEntry(localSavedUser);
     }
   })
