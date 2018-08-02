@@ -240,7 +240,7 @@ function drawWinner(){
     for(let i = 0; i < userTickets; ++i)
       raffleTickets.push(user); 
   }
-
+  console.log("Number of Tickets: ", ticketCount)
   let winningTicket = Math.floor(Math.random() * ticketCount);
   document.getElementById("winnerDisplay").innerHTML = raffleTickets[winningTicket];
 }
@@ -264,7 +264,6 @@ function formatToCSV(jsonUsersArray){
   let csv = "name,dollars,bits,currency,subs,tickets" + "\r\n"
 
   for(user in jsonUsersArray){
-    console.log(user)
     csv += jsonUsersArray[user].name + ","
     csv += jsonUsersArray[user].dollar + ","
     csv += jsonUsersArray[user].bits + ","
@@ -277,16 +276,58 @@ function formatToCSV(jsonUsersArray){
   return csv
 }
 
+function upload(){
+  let fileInput = document.getElementById("uploadedCSV")
+  fileInput.click()
+}
+
+function handleFiles(){
+  let newCSV = document.getElementById("uploadedCSV").files[0];
+  let fileType = newCSV.name.split('.')[1].toLowerCase()
+  if(fileType == "csv"){
+    let reader = new FileReader();
+    reader.readAsText(newCSV);
+    reader.addEventListener("load", () => {
+      updateWithNewCSV(reader.result)
+    })
+  }
+}
+
+function updateWithNewCSV(newCSV){
+  let csvArray = newCSV.split('\r\n')
+  let csvTitleArray = csvArray[0].split(',')
+  csvArray.shift();
+
+  for(item in csvArray){
+    if(csvArray[item] != ""){
+      let userArray = csvArray[item].split(',')
+      let csvUser = {}
+
+      for(column in csvTitleArray){
+        csvUser[csvTitleArray[column].toLowerCase()] = userArray[column]
+      }
+
+      let newEntry = addEntry(csvUser.name, Number(csvUser.cash.replace("$","")), 
+        csvUser.bits, csvUser.currency, csvUser.subs)
+      displayEntry(newEntry)
+      ++entries;
+
+      if(entries == 1){
+        scrollToBottom()
+        document.getElementById("entries").style.display = "block"
+      }
+    }
+  }
+}
+
 function resetItems(){
   
   let rateInputs = document.getElementsByClassName('rate-input')
-  for(let i in rateInputs){
+  for(let i in rateInputs)
     rateInputs[i].value = "";
-  }
 
-  for(user in userEntries){
+  for(user in userEntries)
     deleteTicket(user)
-  }
 
   ticketRates = {
     'dollar': "NA",
@@ -303,18 +344,8 @@ function resetItems(){
   Array.prototype.forEach.call(hideDivs, (div) => {
     div.style.display = "none";
   })
-
   localStorage.clear();
   entries = 0;
-}
-
-let toggleTicketAndTable = false;
-function toggleView(){
-  if(toggleTicketAndTable){
-    toggleTicketAndTable = false;
-  }else{
-    toggleTicketAndTable = true;
-  }
 }
 
 window.addEventListener('keypress', (e) => {

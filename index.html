@@ -125,6 +125,10 @@
         <div class="bordered">
           <div class="row">
             <div class="col">
+                <input type="file" style="display:none" id="uploadedCSV"  onchange="handleFiles()">
+                <button type="button" class="btn btn-primary btn-lg btn-block" onclick="upload()">Upload CSV</button>
+            </div>
+            <div class="col">
               <button type="button" class="btn btn-primary btn-lg btn-block" onclick="submitEntry()">Submit</button>
             </div>
           </div>
@@ -137,6 +141,9 @@
         <!-- Draw Winner -->
         <div class="bordered">
           <div class="row">
+            <div class="col">
+              <button type="button" class="btn btn-primary btn-lg btn-block" onclick="download()">Download CSV</button>
+            </div>
             <div class="col">
               <button type="button" class="btn btn-success btn-lg btn-block" onclick="drawWinner()">Draw Winner</button>
             </div>
