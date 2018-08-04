@@ -339,6 +339,7 @@ function displayWinner(tickets, winTicketNumber, winner){
 
     let acceptBtn = document.createElement("buttom")
     acceptBtn.className = "btn btn-success btn-lg btn-block"
+    acceptBtn.id = "acceptBtnID"
     acceptBtn.onclick = () => { acceptWinner() }
     acceptBtn.innerHTML = "Accept Winner"
     winnerDiv.appendChild(acceptBtn)
@@ -400,11 +401,10 @@ function acceptWinner(){
   tableBody.insertBefore(winnerTR, tableBody.childNodes[0])
 
   document.getElementById("winnerDiv").style.display = "none"
-
   if(winners.length > 8){
     let topJumbo = document.getElementById("top-header");
-    let topJumboSize = Number(topJumbo.style.height.replace("vh", "")) + 7
-    topJumbo.style.height = topJumboSize + "vh"
+    let topJumboSize = Number(topJumbo.style.height.replace("vh", "")) + 6.5
+    topJumbo.style.height = + topJumboSize + "vh"
   }
 }
 
