@@ -9,6 +9,10 @@ function scrollToBottom(){
   document.body.scrollIntoView({behavior: "smooth", block: "end"})
 }
 
+function scrollToTop(){
+  document.body.scrollIntoView({behavior: "smooth", block:"start"})
+}
+
 let entries = 0;
 function setRates(){
   ticketRates.dollar = Number(document.getElementById("dollarRate").value) || "NA"
@@ -86,10 +90,6 @@ function submitEntry(){
 
     if(entries == 0){
       scrollToBottom();
-      document.getElementById("downloadBtn").disabled = false;
-    }
-    else{
-      document.getElementById("downloadBtn").disabled = true;
     }
 
     //++entries; swapped increase entries to displayEntry
@@ -103,7 +103,7 @@ function submitEntry(){
 let userEntries = {}
 function addEntry(name, dollar, bits, currency, subs) {
 
-  name = name.toLowerCase()
+  name = name.toLowerCase().trim()
 
   let newEntry = {
     "name": name,
@@ -228,7 +228,6 @@ function deleteTicket(name){
   let removeTicket = document.getElementById("userCard" + name);
   removeTicket.remove();
   --entries;
-  console.log("Current Entries: ", entries)
   if(entries == 0) document.getElementById("entries").style.display = "none";
 }
 
@@ -242,9 +241,196 @@ function drawWinner(){
     for(let i = 0; i < userTickets; ++i)
       raffleTickets.push(user); 
   }
-  console.log("Number of Tickets: ", ticketCount)
   let winningTicket = Math.floor(Math.random() * ticketCount);
-  document.getElementById("winnerDisplay").innerHTML = raffleTickets[winningTicket];
+  let winner = raffleTickets[winningTicket];
+
+  displayWinner(ticketCount, winningTicket, winner)
+}
+
+let firstDrawing = true;
+function displayWinner(tickets, winTicketNumber, winner){
+  scrollToTop();
+
+  // create winners display
+  if(firstDrawing){
+    firstDrawing = false;
+    let topJumbo = document.getElementById("top-header");
+    while(topJumbo.firstChild){
+      topJumbo.removeChild(topJumbo.firstChild)
+    }
+    topJumbo.style.height = "100vh";
+
+    let newHeading = document.createElement("h2")
+    newHeading.className = "display-4 heading"
+    newHeading.innerHTML = "Time To Draw Winners!"
+    topJumbo.appendChild(newHeading)
+
+    let hr = document.createElement('hr')
+    hr.className = "my-4"
+    topJumbo.appendChild(hr)
+
+    // create winner display main area
+    let newRow = document.createElement("div")
+    newRow.className = "row"
+
+    let leftCol = document.createElement("div")
+    leftCol.className = "col"
+    newRow.appendChild(leftCol)
+
+    let rightCol = document.createElement("div")
+    rightCol.className = "col"
+    newRow.appendChild(rightCol)
+
+    // set up left side column
+    let totalTicketsh4 = document.createElement("h4")
+    totalTicketsh4.id = "totalTicketDisplayTitle"
+    totalTicketsh4.innerHTML = "Total Tickets: "
+
+    let totalTicketsSpan = document.createElement("span")
+    totalTicketsSpan.id = "totalTickets"
+
+    totalTicketsh4.appendChild(totalTicketsSpan)
+    leftCol.appendChild(totalTicketsh4)
+
+    // set up winners table
+    let winnersTable = document.createElement("table")
+    winnersTable.className = "table"
+    winnersTable.id = "winnersTable"
+    let thead = document.createElement("thead")
+    thead.id = "theadID"
+    winnersTable.appendChild(thead)
+    let th = document.createElement("th")
+    th.scope = "col"
+    th.innerHTML = "Current Winners"
+    let winnerCountSpan = document.createElement("span")
+    winnerCountSpan.id = "winnerCountSpan"
+    th.appendChild(winnerCountSpan)
+    thead.appendChild(th)
+    let tbody = document.createElement("tbody")
+    tbody.id = "winnersTableBody"
+    winnersTable.appendChild(tbody)
+    leftCol.appendChild(winnersTable)
+
+    // build right side winners and functions
+    let drawwinnerBtn = document.createElement("button")
+    drawwinnerBtn.className = "btn btn-success btn-lg btn-block"
+    drawwinnerBtn.onclick = () => { drawWinner() }
+    drawwinnerBtn.innerText = "Draw Another Winner"
+    rightCol.appendChild(drawwinnerBtn)
+
+    let winnerDiv = document.createElement("div")
+    winnerDiv.id = "winnerDiv"
+    winnerDiv.style.display = "none"
+
+    let winnerh4 = document.createElement("h4")
+    winnerh4.className = "heading"
+    winnerh4.innerHTML = "Winner: "
+    winnerh4.id = "winnerh4"
+    let winnerSpan = document.createElement("span")
+    winnerSpan.className = "badge badge-danger"
+    winnerSpan.id = "winnerSpan"
+    winnerh4.appendChild(winnerSpan)
+    winnerDiv.appendChild(winnerh4)
+
+    //fun stuff
+    let emote = document.createElement("img")
+    emote.id = "emote";
+    winnerh4.appendChild(emote)
+
+    let acceptBtn = document.createElement("buttom")
+    acceptBtn.className = "btn btn-success btn-lg btn-block"
+    acceptBtn.onclick = () => { acceptWinner() }
+    acceptBtn.innerHTML = "Accept Winner"
+    winnerDiv.appendChild(acceptBtn)
+
+    rightCol.appendChild(winnerDiv)
+
+    // only append full display once done
+    topJumbo.appendChild(newRow)
+  }
+  
+  document.getElementById("totalTickets").innerHTML = tickets;
+
+  document.getElementById("winnerDiv").style.display = "block"
+
+  document.getElementById("winnerSpan").innerHTML = winner
+
+  document.getElementById("emote").src = randEmote()
+}
+
+function randEmote(){
+  let emotes = [1237389, 1238489, 1238480, 1237374, 1238515, 789948]
+  let position = Math.floor(Math.random() * emotes.length)
+
+  return "https://static-cdn.jtvnw.net/emoticons/v1/" + emotes[position] + "/2.0"
+}
+
+let winners = []
+function acceptWinner(){
+  if(!winners.length){
+    let downloadWinnerBtn = document.createElement("button")
+    downloadWinnerBtn.className = "btn btn-primary btn-lg btn-block"
+    downloadWinnerBtn.innerHTML = "Download Winners"
+    downloadWinnerBtn.onclick = () => { downloadWinners() }
+    document.getElementById("theadID").appendChild(downloadWinnerBtn)
+  }
+
+  let winner = document.getElementById("winnerSpan").innerHTML
+  winners.push(winner)
+
+  document.getElementById("winnerCountSpan").innerHTML = ": " + winners.length
+
+  --document.getElementById("totalTickets").innerHTML
+
+  --userEntries[winner].tickets 
+  editUserCard(userEntries[winner])
+
+  let winnerTR = document.createElement("tr")
+  let winnerEmoteSpan = document.createElement("span")
+  let winnerEmote = document.createElement('img')
+  winnerEmoteSpan.className = "emoteClass"
+  winnerEmote.src = document.getElementById("emote").src.replace("2.0", "1.0")
+  winnerEmoteSpan.appendChild(winnerEmote)
+
+  let winnerNameTD = document.createElement("td")
+  winnerNameTD.appendChild(winnerEmoteSpan)
+  winnerNameTD.innerHTML += winner
+  winnerTR.appendChild(winnerNameTD)
+  let tableBody = document.getElementById("winnersTableBody")
+  tableBody.insertBefore(winnerTR, tableBody.childNodes[0])
+
+  document.getElementById("winnerDiv").style.display = "none"
+
+  if(winners.length > 8){
+    let topJumbo = document.getElementById("top-header");
+    let topJumboSize = Number(topJumbo.style.height.replace("vh", "")) + 7
+    topJumbo.style.height = topJumboSize + "vh"
+  }
+}
+
+function downloadWinners(){
+  let element = document.createElement('a')
+
+  let newCSV = formatToWinnerCSV(winners)
+  element.setAttribute('href', 'data:text/csv;charset=usf-8,' + encodeURIComponent(newCSV))
+  element.setAttribute('download', 'winners.csv')
+  
+  element.style.display = 'none'
+  document.body.appendChild(element)
+
+  element.click()
+
+  document.body.removeChild(element)
+}
+
+function formatToWinnerCSV(winnersArray){
+  let csv = "name," + "\r\n"
+
+  for(i in winnersArray){
+    csv += winnersArray[i] + "," + "\r\n"
+  }
+
+  return csv
 }
 
 function download(){
@@ -310,7 +496,8 @@ function updateWithNewCSV(newCSV){
         csvUser[csvTitleArray[column].toLowerCase()] = userArray[column]
       }
 
-      let newEntry = addEntry(csvUser.name, Number(csvUser.cash.replace("$","")), 
+      let newEntry = addEntry(csvUser.name,
+        csvUser.dollars || Number(csvUser.cash.replace("$","")),
         csvUser.bits, csvUser.currency, csvUser.subs)
       displayEntry(newEntry)
       
@@ -358,8 +545,6 @@ window.addEventListener('keypress', (e) => {
       setRates()
     else if(document.activeElement.className == "form-control user-input")
       submitEntry()
-    else
-      console.log("enter was pressed")
   }
 });
 

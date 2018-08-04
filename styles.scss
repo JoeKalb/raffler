@@ -22,8 +22,13 @@ p{
   margin: 0px;
 }
 
+img{
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
 .bordered {
-  margin-top: 4%;
+  margin-top: 2%;
 }
 
 .start-hidden {
@@ -54,6 +59,10 @@ p{
   text-align: center;
 }
 
+.emoteClass{
+  width: 35px;
+}
+
 #displayRates{
   background-color: rgba(173, 216, 230, .5);
 }
@@ -70,4 +79,8 @@ p{
 
 #uploadedCSV{
   display: "none";
+}
+
+#winnerh4{
+  margin-top: 7%
 }
