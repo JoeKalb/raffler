@@ -370,10 +370,10 @@ let winners = []
 function acceptWinner(){
   if(!winners.length){
     let downloadWinnerBtn = document.createElement("button")
-    downloadWinnerBtn.className = "btn btn-primary btn-lg btn-block"
+    downloadWinnerBtn.className = "btn btn-primary btn-lg float-right"
     downloadWinnerBtn.innerHTML = "Download Winners"
     downloadWinnerBtn.onclick = () => { downloadWinners() }
-    document.getElementById("theadID").appendChild(downloadWinnerBtn)
+    document.getElementById("totalTicketDisplayTitle").appendChild(downloadWinnerBtn)
   }
 
   let winner = document.getElementById("winnerSpan").innerHTML
@@ -403,7 +403,7 @@ function acceptWinner(){
   document.getElementById("winnerDiv").style.display = "none"
   if(winners.length > 8){
     let topJumbo = document.getElementById("top-header");
-    let topJumboSize = Number(topJumbo.style.height.replace("vh", "")) + 6.5
+    let topJumboSize = Number(topJumbo.style.height.replace("vh", "")) + 7.5
     topJumbo.style.height = + topJumboSize + "vh"
   }
 }
