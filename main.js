@@ -360,7 +360,7 @@ function displayWinner(tickets, winTicketNumber, winner){
 }
 
 function randEmote(){
-  let emotes = [1237389, 1238489, 1238480, 1237374, 1238515, 789948]
+  let emotes = [1696056, 1690833, 169977, 1466673, 1096390, 169993, 1183505, 192380, 192046, 423878, 444571]
   let position = Math.floor(Math.random() * emotes.length)
 
   return "https://static-cdn.jtvnw.net/emoticons/v1/" + emotes[position] + "/2.0"
