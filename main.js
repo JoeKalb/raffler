@@ -88,7 +88,7 @@ function submitEntry(){
 
     document.getElementById("userName").focus();
 
-    if(entries == 0){
+    if(entries == 1){
       scrollToBottom();
     }
 
@@ -103,7 +103,7 @@ function submitEntry(){
 let userEntries = {}
 function addEntry(name, dollar, bits, currency, subs) {
 
-  name = name.toLowerCase().trim()
+  name = name.toUpperCase().trim()
 
   let newEntry = {
     "name": name,
@@ -568,12 +568,11 @@ window.addEventListener('keypress', (e) => {
       let localSavedUser = JSON.parse(localStorage[key])
       document.getElementById('entries').style.display = "block";
       userEntries[key] = localSavedUser;
-      ++entries;
+      displayEntry(localSavedUser);
       if(entries == 1) {
         document.getElementById('downloadBtn').disabled = false;
         scrollToBottom();
       }
-      displayEntry(localSavedUser);
     }
   })
 })();
