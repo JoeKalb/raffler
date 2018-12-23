@@ -20,6 +20,10 @@
         <button class="btn btn-primary btn-lg" role="button" onclick="download()" id="downloadBtn" disabled>Download CVS</button>
         <button class="btn btn-danger btn-lg" role="button" onclick="resetItems()">Reset</button>
       </p>
+      <div id="streamLabsLogin">
+        <button class="btn btn-primary btn-lg" onclick="streamlabs()">StreamLabs Login</button>
+        <a href="https://streamlabs.com/api/v1.0/authorize?response_type=code&client_id=aomhov08QJpP4x8tsnocdO1YAJYzY55GJplEX6yP&redirect_uri=http://localhost:8000/&scope=socket.token">test</a>
+      </div>
     </div>
   </div>
 
@@ -158,5 +162,7 @@
     </div>
   </div>
   <script src="main.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="streamlabs-io.js"></script>
 </body>
 </html>
