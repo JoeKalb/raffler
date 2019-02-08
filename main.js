@@ -54,7 +54,8 @@ function recalcEntries(){
       userEntries[user].dollar, 
       userEntries[user].bits, 
       userEntries[user].currency,
-      userEntries[user].subs)
+      userEntries[user].subs,
+      userEntries[user].initTickets)
     displayEntry(userEntries[user])
   }
 }
@@ -62,6 +63,7 @@ function recalcEntries(){
 // grab data, add to array of objects, make card, display draw winner area
 function submitEntry(){
   let name = document.getElementById("userName").value.trim();
+  let initTickets = Number(document.getElementById("userInitialTickets").value) || 0;
   let dollar = Number(document.getElementById("userDollar").value) || 0;
   let bits = Number(document.getElementById("userBits").value) || 0;
   let currency = Number(document.getElementById("userCurrency").value) || 0;
@@ -71,12 +73,13 @@ function submitEntry(){
   if(name != ""){
 
     // add values to userEntries array
-    let newEntry = addEntry(name, dollar, bits, currency, subs)
+    let newEntry = addEntry(name, dollar, bits, currency, subs, initTickets)
     // display new Entry
     displayEntry(newEntry);
 
     // clear ticket inputs
     document.getElementById("userName").value = "";
+    document.getElementById("userInitialTickets").value = "";
     document.getElementById("userDollar").value = "";
     document.getElementById("userBits").value = "";
     document.getElementById("userCurrency").value = "";
@@ -101,19 +104,25 @@ function submitEntry(){
 
 // array of all users currenty entered
 let userEntries = {}
-function addEntry(name, dollar, bits, currency, subs) {
+function addEntry(name, dollar, bits, currency, subs, initTickets) {
 
-  name = name.toUpperCase().trim()
-
+  try{
+    name = name.toUpperCase().trim()
+  }
+  catch(err){
+    console.log(err)
+  }
+  
   let newEntry = {
     "name": name,
     "dollar": dollar,
     "bits": bits,
     "currency": currency,
     "subs": subs,
+    "initTickets":initTickets || 0,
     "tickets":0
   }
-  newEntry.tickets = ticketCalc(dollar, bits, currency, subs)
+  newEntry.tickets = ticketCalc(dollar, bits, currency, subs, initTickets || 0)
 
   userEntries[name] = newEntry
 
@@ -123,8 +132,8 @@ function addEntry(name, dollar, bits, currency, subs) {
 }
 
 // will round down values so fractions do not count
-function ticketCalc(dollar, bits, currency, subs){
-  let tickets = 0;
+function ticketCalc(dollar, bits, currency, subs, initTickets){
+  let tickets = initTickets;
 
   tickets += (ticketRates.dollar == "NA") ? 
     0 : Math.floor(dollar/ticketRates.dollar)
@@ -160,8 +169,13 @@ function displayEntry(newEntry){
 
     let usersTickets = document.createElement('h6');
     usersTickets.className = "card-subtitle";
-    usersTickets.innerHTML = "Tickets: " + newEntry.tickets;
+    usersTickets.innerHTML = `TOTAL TICKETS: ${newEntry.tickets}`;
     cardBody.appendChild(usersTickets);
+
+    let usersInitTickets = document.createElement('p');
+    usersInitTickets.className = "card-text inner-p";
+    usersInitTickets.innerHTML = `Initial Tickets: ${newEntry.initTickets}`
+    cardBody.appendChild(usersInitTickets);
 
     let userDollarDisplay = document.createElement('p');
     userDollarDisplay.className = "card-text inner-p";
@@ -207,15 +221,17 @@ function editUserCard(updatedEntry){
   let card = document.getElementById("userCard" + updatedEntry.name);
   card.getElementsByTagName('h6')[0].innerHTML = "Tickets: " + updatedEntry.tickets;
   let otherAttr = card.getElementsByTagName('p')
-  otherAttr[0].innerHTML = "$ " + updatedEntry.dollar;
-  otherAttr[1].innerHTML = "Bits: " + updatedEntry.bits;
-  otherAttr[2].innerHTML = "Currency: " + updatedEntry.currency;
-  otherAttr[3].innerHTML = "Subs: " + updatedEntry.subs;
+  otherAttr[0].innerHTML = `Initial Tickets: ${updatedEntry.initTickets}`
+  otherAttr[1].innerHTML = "$ " + updatedEntry.dollar;
+  otherAttr[2].innerHTML = "Bits: " + updatedEntry.bits;
+  otherAttr[3].innerHTML = "Currency: " + updatedEntry.currency;
+  otherAttr[4].innerHTML = "Subs: " + updatedEntry.subs;
 }
 
 function editTicket(name){
   document.getElementById("userName").value = name;
   document.getElementById("userName").disabled = true;
+  document.getElementById("userInitialTickets").value = userEntries[name].initTickets;
   document.getElementById("userDollar").value = userEntries[name].dollar;
   document.getElementById("userBits").value = userEntries[name].bits;
   document.getElementById("userCurrency").value = userEntries[name].currency;
@@ -449,7 +465,7 @@ function download(){
 }
 
 function formatToCSV(jsonUsersArray){
-  let csv = "name,dollars,bits,currency,subs,tickets" + "\r\n"
+  let csv = "name,dollars,bits,currency,subs,initTickets,tickets" + "\r\n"
 
   for(user in jsonUsersArray){
     csv += jsonUsersArray[user].name + ","
@@ -457,6 +473,7 @@ function formatToCSV(jsonUsersArray){
     csv += jsonUsersArray[user].bits + ","
     csv += jsonUsersArray[user].currency + ","
     csv += jsonUsersArray[user].subs + ","
+    csv += jsonUsersArray[user].initTickets + ","
     csv += jsonUsersArray[user].tickets + ","
     csv += "\r\n"
   }
@@ -496,9 +513,11 @@ function updateWithNewCSV(newCSV){
         csvUser[csvTitleArray[column].toLowerCase()] = userArray[column]
       }
 
+      console.log(csvUser)
+
       let newEntry = addEntry(csvUser.name,
-        csvUser.dollars || Number(csvUser.cash.replace("$","")),
-        csvUser.bits, csvUser.currency, csvUser.subs)
+        Number(csvUser.dollars) || Number(csvUser.cash.replace("$","")),
+        Number(csvUser.bits), Number(csvUser.currency), Number(csvUser.subs), Number(csvUser.inittickets))
       displayEntry(newEntry)
       
 
@@ -528,7 +547,12 @@ function resetItems(){
 
   setRates();
 
-  document.getElementById('winnerDisplay').innerHTML = "";
+  try{
+    document.getElementById('winnerDisplay').innerHTML = "";
+  }
+  catch(err){
+    console.log(err)
+  }
   
   let hideDivs = document.getElementsByClassName('start-hidden')
   Array.prototype.forEach.call(hideDivs, (div) => {
@@ -550,6 +574,22 @@ window.addEventListener('keypress', (e) => {
 
 // checking local hosts with and updating values
 (function() {
+  let keys = Object.keys(localStorage);
+
+  if(keys.includes("ticketRates")){
+    let localSavedRates = JSON.parse(localStorage["ticketRates"])
+    // set local rates from the local storage
+    if(localSavedRates.dollar != "NA" ||
+      localSavedRates.bits != "NA" ||
+      localSavedRates["stream currency"] != "NA"){
+        document.getElementById('dollarRate').value = (localSavedRates.dollar == "NA") ? "" : localSavedRates.dollar;
+        document.getElementById('bitsRate').value = (localSavedRates.bits == "NA") ? "" : localSavedRates.bits;
+        document.getElementById('sCRate').value = (localSavedRates["stream currency"] == "NA") ? "" : localSavedRates["stream currency"];
+        document.getElementById('subRate').value = (localSavedRates.subs == "NA") ? "" : localSavedRates.subs;
+        setRates();
+    }
+  }
+
   Object.keys(localStorage).forEach((key) => {
     if(key == "ticketRates"){
       let localSavedRates = JSON.parse(localStorage[key])
@@ -566,9 +606,10 @@ window.addEventListener('keypress', (e) => {
     }
     else{
       let localSavedUser = JSON.parse(localStorage[key])
+      console.log(localSavedUser)
       document.getElementById('entries').style.display = "block";
       userEntries[key] = localSavedUser;
-      displayEntry(localSavedUser);
+      displayEntry(localSavedUser)
       if(entries == 1) {
         document.getElementById('downloadBtn').disabled = false;
         scrollToBottom();
