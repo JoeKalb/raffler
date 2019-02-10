@@ -79,11 +79,7 @@ function submitEntry(){
 
     // clear ticket inputs
     document.getElementById("userName").value = "";
-    document.getElementById("userInitialTickets").value = "";
-    document.getElementById("userDollar").value = "";
-    document.getElementById("userBits").value = "";
-    document.getElementById("userCurrency").value = "";
-    document.getElementById("userSubs").value = "";
+    clearUserInputs()
     
     if(document.getElementById("entries").style.display != "block") {
       document.getElementById("entries").style.display = "block"
@@ -100,6 +96,14 @@ function submitEntry(){
   else{
     document.getElementById("userName").focus();
   }
+}
+
+function clearUserInputs(){
+  document.getElementById("userInitialTickets").value = "";
+  document.getElementById("userDollar").value = "";
+  document.getElementById("userBits").value = "";
+  document.getElementById("userCurrency").value = "";
+  document.getElementById("userSubs").value = "";
 }
 
 // array of all users currenty entered
@@ -214,6 +218,8 @@ function displayEntry(newEntry){
     buttonDiv.appendChild(deleteButton);
 
     document.getElementById("indivEntries").appendChild(newEntryCard);
+
+    appendToEntryList(newEntry.name)
   }
 }
 
@@ -243,6 +249,13 @@ function deleteTicket(name){
   delete localStorage[name];
   let removeTicket = document.getElementById("userCard" + name);
   removeTicket.remove();
+  let allEntryOptions = entryList.childNodes
+  let entryToRemove;
+  allEntryOptions.forEach((x) => {
+    if(x.value == name)
+      entryToRemove = x;
+  })
+  entryToRemove.remove();
   --entries;
   if(entries == 0) document.getElementById("entries").style.display = "none";
 }
@@ -375,8 +388,45 @@ function displayWinner(tickets, winTicketNumber, winner){
   document.getElementById("emote").src = randEmote()
 }
 
+let emotes = [30259, 41, 88, 425618, 25, 112291, 160402, 112292, 81274, 1470035, 160394]
+
+const selectCasterBtn = document.getElementById("selectCasterBtn")
+const inputStreamer = document.getElementById("inputStreamer")
+const clearCasterBtn = document.getElementById("clearCasterBtn")
+
+selectCasterBtn.addEventListener('click', setEmotesClick)
+clearCasterBtn.addEventListener('click', resetEmoteInput)
+function setEmotesClick(){
+  setEmotesByChannel(inputStreamer.value)
+  clearCasterBtn.style.visibility = "visible"
+  inputStreamer.disabled = true;
+}
+
+function resetEmoteInput(){
+  inputStreamer.disabled = false;
+  clearCasterBtn.style.visibility = "hidden"
+  inputStreamer.value = ''
+  setEmotesByChannel(inputStreamer.value)
+}
+
+function setEmotesByChannel(name){
+  name = name.toLowerCase()
+  switch(name){
+    case 'thabuttress':
+      emotes = [1626622, 1626511, 1626621, 1783065, 555417, 1466673, 1096390, 275711, 169977, 1160739, 169993, 1871188, 1626510, 192380, 423878, 444571]
+      break;
+    case 'nagisake':
+      emotes = [719343, 131518, 719269, 128517, 128028, 131521, 732794, 770900, 127711, 128085, 732796, 208031]
+      break;
+    case 'lunalyrik':
+      emotes = [1757188, 1757191, 1335645, 1335649, 1335647, 1788024, 1253788, 1452423, 789948, 1266781, 1779181, 1452427, 1249941, 1249940, 1760238, 1308996, 1675156, 1263821, 1319425]
+      break;
+    default:
+      emotes = [30259, 41, 88, 425618, 25, 112291, 160402, 112292, 81274, 1470035, 160394]
+  }
+}
+
 function randEmote(){
-  let emotes = [1696056, 1690833, 169977, 1466673, 1096390, 169993, 1183505, 192380, 192046, 423878, 444571]
   let position = Math.floor(Math.random() * emotes.length)
 
   return "https://static-cdn.jtvnw.net/emoticons/v1/" + emotes[position] + "/2.0"
@@ -520,7 +570,7 @@ function updateWithNewCSV(newCSV){
         Number(csvUser.bits), Number(csvUser.currency), Number(csvUser.subs), Number(csvUser.inittickets))
       displayEntry(newEntry)
       
-
+      appendToEntryList(newEntry.name)
       if(entries == 1){
         scrollToBottom()
         document.getElementById("entries").style.display = "block"
@@ -614,9 +664,43 @@ window.addEventListener('keypress', (e) => {
         document.getElementById('downloadBtn').disabled = false;
         scrollToBottom();
       }
+      appendToEntryList(key)
     }
   })
 })();
+
+function appendToEntryList(name){
+  const entryList = document.getElementById("entryList")
+  let currentOptions = entryList.childNodes
+  let optionsValues = []
+  currentOptions.forEach((x) => {
+    optionsValues.push(x.value)
+  })
+  if(!optionsValues.includes(name)){
+    let newOption = document.createElement("option")
+    newOption.value = name
+    entryList.appendChild(newOption)
+  }
+}
+
+const userNameInput = document.getElementById("userName")
+const entryList = document.getElementById("entryList")
+userNameInput.addEventListener("change", checkIfAlreadyEntered)
+
+function checkIfAlreadyEntered(){
+  let name = userNameInput.value.toUpperCase().trim()
+  if(userEntries.hasOwnProperty(name)){
+    editTicket(name)
+    userNameInput.disabled = false;
+  }
+  else
+    clearUserInputs()
+}
+
+$('#myModal').on('shown.bs.modal', function () {
+  console.log("click")
+  $('#myModal').trigger('focus')
+})
 
 // Make sure Service Workers are Supported
 if('serviceWorker' in navigator) {
