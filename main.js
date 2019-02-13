@@ -244,6 +244,21 @@ function editTicket(name){
   document.getElementById("userSubs").value = userEntries[name].subs;
 }
 
+function quickadd(){
+  const userNameQuickAdd = document.getElementById("userNameQuickAdd").value.trim().toUpperCase();
+  const quickAddAmountInput = document.getElementById("quickAddAmountInput").value
+  const selectTypeQuickAdd = document.getElementById("selectTypeQuickAdd").value
+  let numbers =  /^[0-9]+$/
+  if(userEntries.hasOwnProperty(userNameQuickAdd) && numbers.test(quickAddAmountInput)){
+    userEntries[userNameQuickAdd][selectTypeQuickAdd] += Number(quickAddAmountInput)
+    editTicket(userNameQuickAdd)
+    submitEntry();
+  }
+}
+
+const quickAddBtn = document.getElementById("quickAddBtn")
+quickAddBtn.addEventListener("click", quickadd)
+
 function deleteTicket(name){
   delete userEntries[name];
   delete localStorage[name];
